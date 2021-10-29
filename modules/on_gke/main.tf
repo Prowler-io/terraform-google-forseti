@@ -267,7 +267,7 @@ resource "helm_release" "forseti-security" {
     value = module.server_gcs.forseti-server-storage-bucket
   }
 
-  set_string {
+  set {
     name  = "server.config.contents"
     value = base64encode(data.http.server_config_contents.body)
   }
@@ -438,7 +438,7 @@ module "client_config" {
   source            = "../client_config"
   client_enabled    = var.client_enabled
   client_gcs_module = module.client_gcs
-  server_address    = length(data.kubernetes_service.forseti_server.load_balancer_ingress) == 1 ? data.kubernetes_service.forseti_server.load_balancer_ingress[0].ip : ""
+  server_address    = length(data.kubernetes_service.forseti_server.status.0.load_balancer.0.ingress) == 1 ? data.kubernetes_service.forseti_server.status.0.load_balancer.0.ingress.0.ip : ""
 }
 
 #-----------------------#

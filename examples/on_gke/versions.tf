@@ -16,13 +16,33 @@
 
 
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.15"
   required_providers {
-    google      = "~> 3.52.0"
-    google-beta = "~> 3.52.0"
-    helm        = "~> 0.10.4"
-    http        = "~> 1.1.0"
-    kubernetes  = "~> 1.10.0"
-    local       = "~> 1.4.0"
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 3.58.0"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 3.58.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.3.0"
+      configuration_aliases = [ helm.forseti ]
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 2.1.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.6.1"
+      configuration_aliases = [ kubernetes.forseti ]
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 1.4.0"
+    }
   }
 }

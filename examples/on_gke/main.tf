@@ -45,35 +45,6 @@ data "google_compute_subnetwork" "forseti_subnetwork" {
   project = var.project_id
 }
 
-#---------------------#
-# Kubernetes Provider #
-#---------------------#
-provider "kubernetes" {
-  alias                  = "forseti"
-  load_config_file       = false
-  host                   = "https://${data.google_container_cluster.forseti_cluster.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(data.google_container_cluster.forseti_cluster.master_auth.0.cluster_ca_certificate)
-}
-
-#---------------#
-# Helm Provider #
-#---------------#
-provider "helm" {
-  alias           = "forseti"
-  service_account = var.k8s_tiller_sa_name
-  namespace       = module.forseti.kubernetes-forseti-namespace
-  kubernetes {
-    load_config_file       = false
-    host                   = "https://${data.google_container_cluster.forseti_cluster.endpoint}"
-    token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(data.google_container_cluster.forseti_cluster.master_auth.0.cluster_ca_certificate)
-  }
-  debug                           = true
-  automount_service_account_token = true
-  install_tiller                  = true
-}
-
 #----------------------------------------#
 #  Allow GKE Service Account to read GCS #
 #----------------------------------------#
