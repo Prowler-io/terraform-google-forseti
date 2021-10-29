@@ -41,8 +41,8 @@ data "google_container_cluster" "forseti_cluster" {
 #------------------------#
 data "google_compute_subnetwork" "forseti_subnetwork" {
   name    = var.subnetwork
-  region  = var.region
-  project = var.project_id
+  region  = var.network_region
+  project = var.network_project_id
 }
 
 #----------------------------------------#

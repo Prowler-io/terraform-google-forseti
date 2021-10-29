@@ -95,7 +95,14 @@ variable "network" {
 
 variable "subnetwork" {
   description = "The VPC subnetwork where the Forseti client and server will be created"
-  default     = "default"
+}
+
+variable "network_region" {
+  description = "The GCP region of the VPC where the Forseti client and server will be created"
+}
+
+variable "network_project_id" {
+  description = "The GCP project of the VPC where the Forseti client and server will be created"
 }
 
 #-------------#
