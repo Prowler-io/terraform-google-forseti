@@ -501,6 +501,7 @@ module "server_iam" {
   org_id                  = var.org_id
   project_id              = var.project_id
   suffix                  = local.random_hash
+  perform_org_iam_config  = var.perform_org_iam_config
 }
 
 #--------------------#

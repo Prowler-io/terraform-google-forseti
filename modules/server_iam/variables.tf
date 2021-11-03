@@ -52,6 +52,12 @@ variable "suffix" {
   description = "The random suffix to append to all Forseti resources"
 }
 
+variable "perform_org_iam_config" {
+  description = "Whether or not to configure Org level IAM"
+  type        = bool
+  default     = true
+}
+
 #-------------------------#
 # Forseti config notifier #
 #-------------------------#

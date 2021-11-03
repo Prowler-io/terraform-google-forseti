@@ -1027,3 +1027,9 @@ variable "server_log_level" {
   description = "The log level of the Forseti server container."
   default     = "info"
 }
+
+variable "perform_org_iam_config" {
+  description = "Whether or not to configure Org level IAM"
+  type        = bool
+  default     = true
+}

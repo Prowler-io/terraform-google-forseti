@@ -68,49 +68,103 @@ resource "google_project_iam_member" "server_roles" {
 }
 
 resource "google_organization_iam_member" "org_read" {
-  count  = var.org_id != "" ? length(local.server_read_roles) : 0
   # Provider requires Org IAM permissions for this resource
+  count  = var.perform_org_iam_config && var.org_id != "" ? length(local.server_read_roles) : 0
   role   = local.server_read_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
+}
+resource "local_file" "org_read" {
+  count  = var.perform_org_iam_config != true && var.org_id != "" ? 1 : 0
+  filename = "./files/forseti/iam_bindings_to_create/org_read"
+  content  = <<-EOT
+  For the Organization ${var.org_id}, these roles should be bound to ${var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"}
+
+  ${join("\n", [ for r in local.server_read_roles : "${r}" ])}
+  EOT
 }
 
 resource "google_folder_iam_member" "folder_read" {
-  count  = var.folder_id != "" ? length(local.server_read_roles) : 0
   # Provider requires Org IAM permissions for this resource
+  count  = var.perform_org_iam_config && var.folder_id != "" ? length(local.server_read_roles) : 0
   role   = local.server_read_roles[count.index]
   folder = var.folder_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
 }
+resource "local_file" "folder_read" {
+  count  = var.perform_org_iam_config != true && var.folder_id != "" ? 1 : 0
+  filename = "./files/forseti/iam_bindings_to_create/folder_read"
+  content  = <<-EOT
+  For the Folder ${var.folder_id}, these roles should be bound to ${var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"}
+
+  ${join("\n", [ for r in local.server_read_roles : "${r}" ])}
+  EOT
+}
 
 resource "google_organization_iam_member" "org_write" {
-  count  = var.org_id != "" && var.enable_write ? length(local.server_write_roles) : 0
   # Provider requires Org IAM permissions for this resource
+  count  = var.perform_org_iam_config && var.org_id != "" && var.enable_write ? length(local.server_write_roles) : 0
   role   = local.server_write_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
 }
+resource "local_file" "org_write" {
+  count  = var.perform_org_iam_config != true && var.org_id != "" && var.enable_write ? 1 : 0
+  filename = "./files/forseti/iam_bindings_to_create/org_write"
+  content  = <<-EOT
+  For the Organization ${var.org_id}, these roles should be bound to ${var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"}
+
+  ${join("\n", [ for r in local.server_write_roles : "${r}" ])}
+  EOT
+}
 
 resource "google_folder_iam_member" "folder_write" {
-  count  = var.folder_id != "" && var.enable_write ? length(local.server_write_roles) : 0
   # Provider requires Org IAM permissions for this resource
+  count  = var.perform_org_iam_config && var.folder_id != "" && var.enable_write ? length(local.server_write_roles) : 0
   role   = local.server_write_roles[count.index]
   folder = var.folder_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
 }
+resource "local_file" "folder_write" {
+  count  = var.perform_org_iam_config != true && var.folder_id != "" && var.enable_write ? 1 : 0
+  filename = "./files/forseti/iam_bindings_to_create/folder_write"
+  content  = <<-EOT
+  For the Folder ${var.folder_id}, these roles should be bound to ${var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"}
+
+  ${join("\n", [ for r in local.server_write_roles : "${r}" ])}
+  EOT
+}
 
 resource "google_organization_iam_member" "org_cscc" {
-  count  = var.org_id != "" && var.cscc_violations_enabled ? length(local.server_cscc_roles) : 0
   # Provider requires Org IAM permissions for this resource
+  count  = var.perform_org_iam_config && var.org_id != "" && var.cscc_violations_enabled ? length(local.server_cscc_roles) : 0
   role   = local.server_cscc_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
 }
+resource "local_file" "org_cscc" {
+  count  = var.perform_org_iam_config != true && var.org_id != "" && var.cscc_violations_enabled ? 1 : 0
+  filename = "./files/forseti/iam_bindings_to_create/org_cscc"
+  content  = <<-EOT
+  For the Organization ${var.org_id}, these roles should be bound to ${var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"}
+
+  ${join("\n", [ for r in local.server_cscc_roles : "${r}" ])}
+  EOT
+}
 
 resource "google_organization_iam_member" "cloud_profiler" {
-  count  = var.cloud_profiler_enabled ? length(local.server_cloud_profiler_roles) : 0
   # Provider requires Org IAM permissions for this resource
+  count  = var.perform_org_iam_config && var.org_id != "" && var.cloud_profiler_enabled ? length(local.server_cloud_profiler_roles) : 0
   role   = local.server_cloud_profiler_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
+}
+resource "local_file" "cloud_profiler" {
+  count  = var.perform_org_iam_config != true && var.org_id != "" && var.cloud_profiler_enabled ? 1 : 0
+  filename = "./files/forseti/iam_bindings_to_create/cloud_profiler"
+  content  = <<-EOT
+  For the Organization ${var.org_id}, these roles should be bound to ${var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"}
+
+  ${join("\n", [ for r in local.server_cloud_profiler_roles : "${r}" ])}
+  EOT
 }
