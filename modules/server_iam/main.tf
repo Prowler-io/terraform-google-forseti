@@ -69,6 +69,7 @@ resource "google_project_iam_member" "server_roles" {
 
 resource "google_organization_iam_member" "org_read" {
   count  = var.org_id != "" ? length(local.server_read_roles) : 0
+  # Provider requires Org IAM permissions for this resource
   role   = local.server_read_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
@@ -76,6 +77,7 @@ resource "google_organization_iam_member" "org_read" {
 
 resource "google_folder_iam_member" "folder_read" {
   count  = var.folder_id != "" ? length(local.server_read_roles) : 0
+  # Provider requires Org IAM permissions for this resource
   role   = local.server_read_roles[count.index]
   folder = var.folder_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
@@ -83,6 +85,7 @@ resource "google_folder_iam_member" "folder_read" {
 
 resource "google_organization_iam_member" "org_write" {
   count  = var.org_id != "" && var.enable_write ? length(local.server_write_roles) : 0
+  # Provider requires Org IAM permissions for this resource
   role   = local.server_write_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
@@ -90,6 +93,7 @@ resource "google_organization_iam_member" "org_write" {
 
 resource "google_folder_iam_member" "folder_write" {
   count  = var.folder_id != "" && var.enable_write ? length(local.server_write_roles) : 0
+  # Provider requires Org IAM permissions for this resource
   role   = local.server_write_roles[count.index]
   folder = var.folder_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
@@ -97,6 +101,7 @@ resource "google_folder_iam_member" "folder_write" {
 
 resource "google_organization_iam_member" "org_cscc" {
   count  = var.org_id != "" && var.cscc_violations_enabled ? length(local.server_cscc_roles) : 0
+  # Provider requires Org IAM permissions for this resource
   role   = local.server_cscc_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"
@@ -104,6 +109,7 @@ resource "google_organization_iam_member" "org_cscc" {
 
 resource "google_organization_iam_member" "cloud_profiler" {
   count  = var.cloud_profiler_enabled ? length(local.server_cloud_profiler_roles) : 0
+  # Provider requires Org IAM permissions for this resource
   role   = local.server_cloud_profiler_roles[count.index]
   org_id = var.org_id
   member = var.server_service_account == "" ? "serviceAccount:${google_service_account.forseti_server[0].email}" : "serviceAccount:${var.server_service_account}"

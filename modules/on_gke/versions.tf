@@ -21,10 +21,12 @@ terraform {
     google = {
       source  = "hashicorp/google"
       version = "~> 3.58.0"
+      configuration_aliases = [ google.forseti, google.network ]
     }
     google-beta = {
       source  = "hashicorp/google-beta"
       version = "~> 3.58.0"
+      configuration_aliases = [ google-beta.forseti ]
     }
     helm = {
       source  = "hashicorp/helm"

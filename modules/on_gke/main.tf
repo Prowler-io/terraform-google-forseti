@@ -88,6 +88,7 @@ locals {
 # Activate services #
 #-------------------#
 resource "google_project_service" "main" {
+  provider = google.forseti
   count              = length(local.services_list)
   project            = var.project_id
   service            = local.services_list[count.index]
@@ -122,6 +123,7 @@ data "tls_public_key" "git_sync_public_ssh_key" {
 //  Obtain Forseti Server Configuration
 //*****************************************
 data "google_storage_object_signed_url" "file_url" {
+  provider = google.forseti
   bucket      = module.server_gcs.forseti-server-storage-bucket
   path        = "configs/forseti_conf_server.yaml"
   content_md5 = module.server_config.forseti-server-config-md5
@@ -150,6 +152,7 @@ resource "kubernetes_namespace" "forseti" {
 // Configure Workload Identity
 //*****************************************
 resource "google_service_account_iam_binding" "forseti_server_workload_identity" {
+  provider = google.forseti
   service_account_id = "projects/${var.project_id}/serviceAccounts/${module.server_iam.forseti-server-service-account}"
   role               = "roles/iam.workloadIdentityUser"
 
@@ -159,6 +162,7 @@ resource "google_service_account_iam_binding" "forseti_server_workload_identity"
 }
 
 resource "google_service_account_iam_binding" "forseti_client_workload_identity" {
+  provider = google.forseti
   service_account_id = "projects/${var.project_id}/serviceAccounts/${module.client_iam.forseti-client-service-account}"
   role               = "roles/iam.workloadIdentityUser"
 
@@ -416,6 +420,9 @@ module "client_iam" {
   client_enabled = var.client_enabled
   project_id     = var.project_id
   suffix         = local.random_hash
+  providers = {
+    google = google.forseti
+  }
 }
 
 #--------------------#
@@ -423,6 +430,9 @@ module "client_iam" {
 #--------------------#
 module "client_gcs" {
   source                  = "../client_gcs"
+  providers = {
+    google = google.forseti
+  }
   client_enabled          = var.client_enabled
   project_id              = var.project_id
   storage_bucket_location = var.storage_bucket_location
@@ -436,6 +446,9 @@ module "client_gcs" {
 #-----------------------#
 module "client_config" {
   source            = "../client_config"
+  providers = {
+    google = google.forseti
+  }
   client_enabled    = var.client_enabled
   client_gcs_module = module.client_gcs
   server_address    = length(data.kubernetes_service.forseti_server.status.0.load_balancer.0.ingress) == 1 ? data.kubernetes_service.forseti_server.status.0.load_balancer.0.ingress.0.ip : ""
@@ -446,6 +459,10 @@ module "client_config" {
 #-----------------------#
 module "client" {
   source = "../client"
+  providers = {
+    google.forseti = google.forseti
+    google.network = google.network
+  }
 
   client_enabled           = var.client_enabled
   project_id               = var.project_id
@@ -477,6 +494,11 @@ module "client" {
 #------------------#
 module "cloudsql" {
   source                     = "../cloudsql"
+  providers = {
+    google.forseti = google.forseti
+    google.network = google.network
+  }
+
   cloudsql_disk_size         = var.cloudsql_disk_size
   cloudsql_private           = var.cloudsql_private
   cloudsql_region            = var.cloudsql_region
@@ -497,6 +519,9 @@ module "cloudsql" {
 #--------------------#
 module "server_iam" {
   source                  = "../server_iam"
+  providers = {
+    google = google.forseti
+  }
   cscc_violations_enabled = var.cscc_violations_enabled
   cloud_profiler_enabled  = var.cloud_profiler_enabled
   enable_write            = var.enable_write
@@ -511,6 +536,9 @@ module "server_iam" {
 #--------------------#
 module "server_gcs" {
   source                   = "../server_gcs"
+  providers = {
+    google = google.forseti
+  }
   project_id               = var.project_id
   bucket_cai_location      = var.bucket_cai_location
   bucket_cai_lifecycle_age = var.bucket_cai_lifecycle_age
@@ -525,6 +553,9 @@ module "server_gcs" {
 #----------------------#
 module "server_rules" {
   source               = "../rules"
+  providers = {
+    google = google.forseti
+  }
   server_gcs_module    = module.server_gcs
   org_id               = var.org_id
   domain               = var.domain
@@ -536,6 +567,9 @@ module "server_rules" {
 #-----------------------#
 module "server_config" {
   source                                              = "../server_config"
+  providers = {
+    google = google.forseti
+  }
   rules_path                                          = "gs://${module.server_gcs.forseti-server-storage-bucket}/rules"
   composite_root_resources                            = var.composite_root_resources
   server_gcs_module                                   = module.server_gcs

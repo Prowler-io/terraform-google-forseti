@@ -81,6 +81,7 @@ data "template_file" "forseti_client_environment" {
 # Forseti client VM #
 #-------------------#
 resource "google_compute_instance" "forseti-client" {
+  provider = google.forseti
   count                     = var.client_enabled ? 1 : 0
   name                      = local.client_name
   zone                      = local.client_zone
@@ -181,6 +182,7 @@ resource "google_compute_firewall" "forseti-client-deny-all" {
 }
 
 resource "google_compute_firewall" "forseti-client-ssh-external" {
+  provider = google.network
   count                   = var.client_enabled && var.manage_firewall_rules && ! var.client_private ? 1 : 0
   name                    = "forseti-client-ssh-external-${var.suffix}"
   project                 = local.network_project
@@ -205,6 +207,7 @@ resource "google_compute_firewall" "forseti-client-ssh-external" {
 }
 
 resource "google_compute_firewall" "forseti-client-ssh-iap" {
+  provider = google.network
   count                   = var.client_enabled && var.manage_firewall_rules && var.client_private ? 1 : 0
   name                    = "forseti-client-ssh-iap-${var.suffix}"
   project                 = local.network_project

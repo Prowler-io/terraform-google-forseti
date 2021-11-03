@@ -29,11 +29,13 @@ locals {
 # Forseti Private SQL Database Setup #
 #------------------------------------#
 data "google_compute_network" "cloudsql_private_network" {
+  provider = google.network
   name    = var.network
   project = local.network_project
 }
 
 resource "google_project_service" "service_networking" {
+  provider = google.forseti
   count              = var.cloudsql_private ? 1 : 0
   project            = var.project_id
   service            = "servicenetworking.googleapis.com"
@@ -41,6 +43,7 @@ resource "google_project_service" "service_networking" {
 }
 
 resource "google_project_service" "service_networking_network_project" {
+  provider = google.network
   count              = var.enable_service_networking && var.cloudsql_private && local.network_project != var.project_id ? 1 : 0
   project            = local.network_project
   service            = "servicenetworking.googleapis.com"
@@ -48,6 +51,7 @@ resource "google_project_service" "service_networking_network_project" {
 }
 
 resource "google_compute_global_address" "private_ip_address" {
+  provider = google.network
   count         = var.cloudsql_private ? 1 : 0
   project       = local.network_project
   name          = "private-ip-address-${local.random_hash}"
@@ -59,6 +63,7 @@ resource "google_compute_global_address" "private_ip_address" {
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
+  provider = google.network
   count                   = var.enable_service_networking && var.cloudsql_private ? 1 : 0
   network                 = data.google_compute_network.cloudsql_private_network.self_link
   service                 = "servicenetworking.googleapis.com"
@@ -73,6 +78,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 # Forseti SQL database #
 #----------------------#
 resource "google_sql_database_instance" "master" {
+  provider = google.forseti
   name             = local.cloudsql_name
   project          = var.project_id
   region           = var.cloudsql_region
@@ -116,12 +122,14 @@ resource "google_sql_database_instance" "master" {
 }
 
 resource "google_sql_database" "forseti-db" {
+  provider = google.forseti
   name     = var.cloudsql_db_name
   project  = var.project_id
   instance = google_sql_database_instance.master.name
 }
 
 resource "google_sql_user" "forseti_user" {
+  provider = google.forseti
   name     = var.cloudsql_user
   instance = google_sql_database_instance.master.name
   project  = var.project_id
