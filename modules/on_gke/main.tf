@@ -82,6 +82,8 @@ locals {
   git_sync_private_ssh_key           = local.create_policy_library_key ? tls_private_key.policy_library_sync_ssh[0].private_key_pem : local.git_sync_private_ssh_key_from_file
 
   git_sync_public_ssh_key = length(tls_private_key.policy_library_sync_ssh) == 1 ? tls_private_key.policy_library_sync_ssh[0].public_key_openssh : ""
+
+  orchestrator_gsa_id = "forseti-orch-gcp-${local.random_hash}"
 }
 
 #-------------------#
@@ -146,6 +148,16 @@ resource "kubernetes_namespace" "forseti" {
   metadata {
     name = local.kubernetes_namespace
   }
+}
+
+//*****************************************
+//  Create Orchestrator GSA if client is disabled
+//*****************************************
+resource "google_service_account" "forseti_orchestrator" {
+  count        = var.client_enabled ? 0 : 1
+  account_id   = local.orchestrator_gsa_id
+  project      = var.project_id
+  display_name = "Forseti Orchestrator Service Account"
 }
 
 //*****************************************
@@ -417,12 +429,13 @@ data "kubernetes_service" "forseti_server" {
 #--------------------#
 module "client_iam" {
   source         = "../client_iam"
-  client_enabled = var.client_enabled
-  project_id     = var.project_id
-  suffix         = local.random_hash
   providers = {
     google = google.forseti
   }
+  client_enabled         = var.client_enabled
+  client_service_account = var.client_enabled ? "" : "${local.orchestrator_gsa_id}@${var.project_id}.iam.gserviceaccount.com"
+  project_id             = var.project_id
+  suffix                 = local.random_hash
 }
 
 #--------------------#
