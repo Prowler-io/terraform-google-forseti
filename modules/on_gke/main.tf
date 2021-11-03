@@ -64,6 +64,7 @@ locals {
     "container.googleapis.com",
     "containerregistry.googleapis.com",
     "servicemanagement.googleapis.com",
+    "securitycenter.googleapis.com",
     "logging.googleapis.com",
     "cloudasset.googleapis.com",
     "storage-api.googleapis.com",
