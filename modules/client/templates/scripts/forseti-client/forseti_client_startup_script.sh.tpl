@@ -57,3 +57,6 @@ echo "${forseti_environment}" > /etc/profile.d/forseti_environment.sh | sudo sh
 
 # Download client configuration from GCS
 gsutil cp gs://${storage_bucket_name}/configs/forseti_conf_client.yaml ${forseti_client_conf_path}
+
+# Fix dependencies
+python3 -m pip install -q setuptools==47.2.0 protobuf==3.9.0
