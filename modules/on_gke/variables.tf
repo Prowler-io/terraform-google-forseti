@@ -994,6 +994,12 @@ variable "load_balancer" {
   default     = "internal"
 }
 
+variable "loadBalancerSourceRanges" {
+  description = "The CIDR to restrict access to the loadBalancer from. Set if server.loadBalancer is 'external' or 'internal'"
+  type        = list(string)
+  default     = [""]
+}
+
 variable "network_policy" {
   description = "Apply pod network policies"
   type        = bool

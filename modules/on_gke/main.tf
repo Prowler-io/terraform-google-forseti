@@ -257,6 +257,11 @@ resource "helm_release" "forseti-security" {
   }
 
   set {
+    name  = "server.loadBalancerSourceRanges"
+    value = "{${join(",", var.loadBalancerSourceRanges)}}"
+  }
+
+  set {
     name  = "server.cloudProfilerEnabled"
     value = var.cloud_profiler_enabled
   }
