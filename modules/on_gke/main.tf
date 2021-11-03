@@ -453,6 +453,7 @@ module "client" {
   client_access_config     = var.client_access_config
   client_private           = var.client_private
   manage_firewall_rules    = var.manage_firewall_rules
+  create_deny_fw_rule      = var.create_deny_fw_rule
   firewall_desc_prefix     = var.firewall_desc_prefix
   client_iam_module        = module.client_iam
   client_gcs_module        = module.client_gcs

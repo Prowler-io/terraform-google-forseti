@@ -813,6 +813,12 @@ variable "firewall_desc_prefix" {
   default     = ""
 }
 
+variable "create_deny_fw_rule" {
+  description = "Create a 'deny all' firewall rule"
+  type        = bool
+  default     = true
+}
+
 #----------------#
 # Forseti client #
 #----------------#

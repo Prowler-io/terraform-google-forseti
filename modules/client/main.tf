@@ -151,7 +151,8 @@ resource "google_compute_instance" "forseti-client" {
 # Forseti firewall rules #
 #------------------------#
 resource "google_compute_firewall" "forseti-client-deny-all" {
-  count                   = var.client_enabled && var.manage_firewall_rules ? 1 : 0
+  provider = google.network
+  count                   = var.client_enabled && var.manage_firewall_rules && var.create_deny_fw_rule ? 1 : 0
   name                    = "forseti-client-deny-all-${var.suffix}"
   project                 = local.network_project
   network                 = var.network

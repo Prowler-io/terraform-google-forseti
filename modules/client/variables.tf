@@ -130,6 +130,12 @@ variable "firewall_desc_prefix" {
   default     = ""
 }
 
+variable "create_deny_fw_rule" {
+  description = "Create a 'deny all' firewall rule"
+  type        = bool
+  default     = true
+}
+
 variable "google_cloud_sdk_version" {
   description = "Version of the Google Cloud SDK to install"
   default     = "335.0.0-0"
