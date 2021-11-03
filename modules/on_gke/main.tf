@@ -186,53 +186,6 @@ resource "google_service_account_iam_binding" "forseti_client_workload_identity"
 }
 
 //*****************************************
-//  Create Tiller Kubernetes Service Account
-//*****************************************
-resource "kubernetes_service_account" "tiller" {
-  metadata {
-    name      = var.k8s_tiller_sa_name
-    namespace = local.kubernetes_namespace
-  }
-  depends_on = [
-    kubernetes_namespace.forseti
-  ]
-}
-
-//*****************************************
-//  Create Tiller RBAC
-//*****************************************
-resource "kubernetes_role" "tiller" {
-  metadata {
-    name      = "tiller-manager"
-    namespace = local.kubernetes_namespace
-  }
-
-  rule {
-    api_groups = ["", "extensions", "apps", "batch/v1beta1", "batch", "networking.k8s.io", "rbac.authorization.k8s.io"]
-    resources  = ["*"]
-    verbs      = ["*"]
-  }
-  depends_on = [kubernetes_namespace.forseti]
-}
-
-resource "kubernetes_role_binding" "tiller" {
-  metadata {
-    name      = "tiller-binding"
-    namespace = local.kubernetes_namespace
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
-    name      = kubernetes_role.tiller.metadata.0.name
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = kubernetes_service_account.tiller.metadata.0.name
-    namespace = local.kubernetes_namespace
-  }
-}
-
-//*****************************************
 //  Deploy Forseti on GKE via Helm
 //*****************************************
 resource "helm_release" "forseti-security" {
@@ -246,7 +199,6 @@ resource "helm_release" "forseti-security" {
     google_service_account_iam_binding.forseti_client_workload_identity,
     google_service_account_iam_binding.forseti_server_workload_identity,
     kubernetes_namespace.forseti,
-    kubernetes_role_binding.tiller
   ]
 
   set {

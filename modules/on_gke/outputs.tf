@@ -54,11 +54,6 @@ output "kubernetes-forseti-server-ingress" {
   value       = length(data.kubernetes_service.forseti_server.status.0.load_balancer.0.ingress) == 1 ? data.kubernetes_service.forseti_server.status.0.load_balancer.0.ingress.0.ip : ""
 }
 
-output "kubernetes-forseti-tiller-sa-name" {
-  description = "The name of the service account deploying Forseti"
-  value       = kubernetes_service_account.tiller.metadata[0].name
-}
-
 output "suffix" {
   description = "The random suffix appended to Forseti resources"
   value       = local.random_hash
