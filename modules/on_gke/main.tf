@@ -443,7 +443,7 @@ module "client" {
   forseti_version          = var.forseti_version
   forseti_repo_url         = var.forseti_repo_url
   client_type              = var.client_type
-  network_project          = local.network_project
+  network_project          = var.network_project
   network                  = var.network
   suffix                   = local.random_hash
   client_region            = var.client_region
