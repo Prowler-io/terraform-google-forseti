@@ -807,6 +807,12 @@ variable "manage_firewall_rules" {
   default     = true
 }
 
+variable "firewall_desc_prefix" {
+  description = "Prefix for Firewall rule description"
+  type        = string
+  default     = ""
+}
+
 #----------------#
 # Forseti client #
 #----------------#

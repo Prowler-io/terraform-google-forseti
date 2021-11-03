@@ -185,6 +185,7 @@ resource "google_compute_firewall" "forseti-client-ssh-external" {
   provider = google.network
   count                   = var.client_enabled && var.manage_firewall_rules && ! var.client_private ? 1 : 0
   name                    = "forseti-client-ssh-external-${var.suffix}"
+  description             = "${var.firewall_desc_prefix}Forseti client external SSH access"
   project                 = local.network_project
   network                 = var.network
   target_service_accounts = [var.client_iam_module.forseti-client-service-account]
@@ -210,6 +211,7 @@ resource "google_compute_firewall" "forseti-client-ssh-iap" {
   provider = google.network
   count                   = var.client_enabled && var.manage_firewall_rules && var.client_private ? 1 : 0
   name                    = "forseti-client-ssh-iap-${var.suffix}"
+  description             = "${var.firewall_desc_prefix}Forseti client external SSH access (IAP)"
   project                 = local.network_project
   network                 = var.network
   target_service_accounts = [var.client_iam_module.forseti-client-service-account]
