@@ -62,14 +62,6 @@ resource "google_storage_bucket_object" "main" {
   name    = element(local.files, count.index)
   content = element(data.template_file.main.*.rendered, count.index)
   bucket  = var.server_gcs_module.forseti-server-storage-bucket
-
-  lifecycle {
-    ignore_changes = [
-      content,
-      content_language,
-      detect_md5hash,
-    ]
-  }
 }
 
 // When `manage_rules_enabled` is set to false, by default, `rules/` dir won't be created.
