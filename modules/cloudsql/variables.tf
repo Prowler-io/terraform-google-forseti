@@ -50,6 +50,19 @@ variable "enable_service_networking" {
 #------------#
 # Forseti db #
 #------------#
+
+variable "cloudsql_create_instance" {
+  description = "Toggle for creation of instance. If false, specify the instance name in cloudsql_instance"
+  type        = bool
+  default     = true
+}
+
+variable "cloudsql_instance" {
+  description = "The name of the CloudSQL instance to use if cloudsql_create_instance is false"
+  type        = string
+  default     = ""
+}
+
 variable "cloudsql_region" {
   description = "CloudSQL region"
   default     = "us-central1"

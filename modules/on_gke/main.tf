@@ -472,6 +472,8 @@ module "cloudsql" {
     google.network = google.network
   }
 
+  cloudsql_create_instance   = var.cloudsql_create_instance
+  cloudsql_instance          = var.cloudsql_instance
   cloudsql_disk_size         = var.cloudsql_disk_size
   cloudsql_private           = var.cloudsql_private
   cloudsql_region            = var.cloudsql_region

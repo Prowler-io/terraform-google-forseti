@@ -78,6 +78,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 # Forseti SQL database #
 #----------------------#
 resource "google_sql_database_instance" "master" {
+  count    = var.cloudsql_create_instance ? 1 : 0
   provider = google.forseti
   name             = local.cloudsql_name
   project          = var.project_id
@@ -121,17 +122,24 @@ resource "google_sql_database_instance" "master" {
   depends_on = [null_resource.services-dependency, google_service_networking_connection.private_vpc_connection]
 }
 
+# Data source for EITHER the instance we create here, OR var.cloudsql_instance
+data "google_sql_database_instance" "master" {
+  provider = google.forseti
+  name     = var.cloudsql_create_instance ? google_sql_database_instance.master[0].name : var.cloudsql_instance
+  project  = var.project_id
+}
+
 resource "google_sql_database" "forseti-db" {
   provider = google.forseti
   name     = var.cloudsql_db_name
   project  = var.project_id
-  instance = google_sql_database_instance.master.name
+  instance = data.google_sql_database_instance.master.name
 }
 
 resource "google_sql_user" "forseti_user" {
   provider = google.forseti
   name     = var.cloudsql_user
-  instance = google_sql_database_instance.master.name
+  instance = data.google_sql_database_instance.master.name
   project  = var.project_id
   host     = var.cloudsql_user_host
   password = local.cloudsql_password

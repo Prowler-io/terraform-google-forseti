@@ -16,17 +16,17 @@
 
 output "forseti-cloudsql-connection-name" {
   description = "The connection string to the CloudSQL instance"
-  value       = google_sql_database_instance.master.connection_name
+  value       = data.google_sql_database_instance.master.connection_name
 }
 
 output "forseti-cloudsql-instance-name" {
   description = "The name of the master CloudSQL instance"
-  value       = google_sql_database_instance.master.name
+  value       = data.google_sql_database_instance.master.name
 }
 
 output "forseti-cloudsql-instance-ip" {
   description = "The IP of the master CloudSQL instance"
-  value       = google_sql_database_instance.master.ip_address.0.ip_address
+  value       = data.google_sql_database_instance.master.ip_address.0.ip_address
 }
 
 output "forseti-cloudsql-region" {
@@ -63,5 +63,5 @@ output "forseti-cloudsql-zone" {
 
 output "forseti-cloudsql-self_link" {
   description = "Forseti master CloudSQL instance self_link"
-  value       = google_sql_database_instance.master.self_link
+  value       = data.google_sql_database_instance.master.self_link
 }
