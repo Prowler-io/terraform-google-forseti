@@ -1002,11 +1002,6 @@ variable "k8s_forseti_server_ingress_cidr" {
   default     = ""
 }
 
-variable "k8s_tiller_sa_name" {
-  description = "The Kubernetes Service Account used by Tiller"
-  default     = "tiller"
-}
-
 variable "load_balancer" {
   description = "The type of load balancer to deploy for the forseti-server if desired: none, external, internal"
   default     = "internal"
