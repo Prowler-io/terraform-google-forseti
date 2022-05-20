@@ -20,37 +20,29 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 3.58.0"
       configuration_aliases = [ google.forseti, google.network ]
     }
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = "~> 3.58.0"
       configuration_aliases = [ google-beta.forseti ]
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.3.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.6.1"
     }
     null = {
       source  = "hashicorp/null"
-      version = "~> 2.1"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.0.1"
     }
     template = {
       source  = "hashicorp/template"
-      version = "~> 2.1"
     }
     tls = {
       source  = "hashicorp/tls"
-      version = "~> 2.1"
     }
   }
 }
